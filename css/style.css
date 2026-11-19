@@ -45,6 +45,13 @@ h2 { margin: 0 0 16px; font-size: 1.1rem; }
 
 .timer { text-align: center; }
 .timer-display { font-size: 3.5rem; font-weight: 700; font-variant-numeric: tabular-nums; margin-bottom: 16px; }
+.timer-settings { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px; color: var(--muted); font-size: 0.9rem; }
+.timer-settings input { width: 70px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; }
+
+.message { min-height: 1.3em; margin: -8px 0 8px; color: var(--danger); font-size: 0.85rem; }
+.sort-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: var(--muted); font-size: 0.9rem; }
+.sort-row select { padding: 5px 8px; border: 1px solid var(--border); border-radius: 8px; background: #fff; font-size: 0.9rem; }
+
 .button-row { display: flex; justify-content: center; gap: 8px; }
 
 .btn {
