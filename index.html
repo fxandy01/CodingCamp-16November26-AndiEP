@@ -19,6 +19,11 @@
     <section class="card timer" aria-labelledby="timer-title">
       <h2 id="timer-title">Focus Timer</h2>
       <div id="timer-display" class="timer-display">25:00</div>
+      <form id="timer-form" class="timer-settings">
+        <label for="timer-minutes">Minutes</label>
+        <input id="timer-minutes" type="number" min="1" max="180" value="25" required>
+        <button type="submit" class="btn small">Set</button>
+      </form>
       <div class="button-row">
         <button id="timer-start" class="btn primary">Start</button>
         <button id="timer-stop" class="btn">Stop</button>
@@ -33,6 +38,17 @@
         <input id="todo-input" type="text" placeholder="Add a new task..." maxlength="120" required>
         <button type="submit" class="btn primary">Add</button>
       </form>
+      <p id="todo-message" class="message" role="alert"></p>
+      <div class="sort-row">
+        <label for="todo-sort">Sort by</label>
+        <select id="todo-sort">
+          <option value="added">Order added</option>
+          <option value="az">A to Z</option>
+          <option value="za">Z to A</option>
+          <option value="active">Not done first</option>
+          <option value="done">Done first</option>
+        </select>
+      </div>
       <ul id="todo-list" class="todo-list"></ul>
       <p id="todo-empty" class="empty">No tasks yet. Add one above.</p>
     </section>

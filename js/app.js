@@ -3,7 +3,11 @@
 
   var TODO_KEY = 'dashboard.todos';
   var LINK_KEY = 'dashboard.links';
-  var TIMER_SECONDS = 25 * 60;
+  var TIMER_KEY = 'dashboard.timerMinutes';
+  var SORT_KEY = 'dashboard.todoSort';
+  var DEFAULT_MINUTES = 25;
+  var MIN_MINUTES = 1;
+  var MAX_MINUTES = 180;
 
   // ---------- Storage helpers ----------
   function load(key, fallback) {
@@ -49,8 +53,16 @@
 
   // ---------- Focus timer ----------
   var timerDisplay = document.getElementById('timer-display');
-  var remaining = TIMER_SECONDS;
+  var timerForm = document.getElementById('timer-form');
+  var timerMinutesInput = document.getElementById('timer-minutes');
+  var timerMinutes = loadMinutes();
+  var remaining = timerMinutes * 60;
   var timerId = null;
+
+  function loadMinutes() {
+    var saved = parseInt(localStorage.getItem(TIMER_KEY), 10);
+    return saved >= MIN_MINUTES && saved <= MAX_MINUTES ? saved : DEFAULT_MINUTES;
+  }
 
   function renderTimer() {
     timerDisplay.textContent = pad(Math.floor(remaining / 60)) + ':' + pad(remaining % 60);
@@ -75,9 +87,24 @@
 
   function resetTimer() {
     stopTimer();
-    remaining = TIMER_SECONDS;
+    remaining = timerMinutes * 60;
     renderTimer();
   }
+
+  function setTimerMinutes(e) {
+    e.preventDefault();
+    var value = parseInt(timerMinutesInput.value, 10);
+    if (!(value >= MIN_MINUTES && value <= MAX_MINUTES)) {
+      alert('Enter a number of minutes from ' + MIN_MINUTES + ' to ' + MAX_MINUTES + '.');
+      return;
+    }
+    timerMinutes = value;
+    localStorage.setItem(TIMER_KEY, String(value));
+    resetTimer();
+  }
+
+  timerForm.addEventListener('submit', setTimerMinutes);
+  timerMinutesInput.value = timerMinutes;
 
   document.getElementById('timer-start').addEventListener('click', startTimer);
   document.getElementById('timer-stop').addEventListener('click', stopTimer);
@@ -89,8 +116,34 @@
   var todoInput = document.getElementById('todo-input');
   var todoList = document.getElementById('todo-list');
   var todoEmpty = document.getElementById('todo-empty');
+  var todoMessage = document.getElementById('todo-message');
+  var todoSort = document.getElementById('todo-sort');
   var todos = load(TODO_KEY, []);
   var editingId = null;
+  var sortMode = localStorage.getItem(SORT_KEY) || 'added';
+  todoSort.value = sortMode;
+  if (todoSort.value !== sortMode) { sortMode = 'added'; todoSort.value = sortMode; }
+
+  function isDuplicate(text, ignoreId) {
+    var key = text.trim().toLowerCase();
+    return todos.some(function (t) {
+      return t.id !== ignoreId && t.text.trim().toLowerCase() === key;
+    });
+  }
+
+  function showMessage(text) {
+    todoMessage.textContent = text;
+  }
+
+  function getSortedTodos() {
+    var list = todos.slice();
+    var byText = function (a, b) { return a.text.localeCompare(b.text, undefined, { sensitivity: 'base' }); };
+    if (sortMode === 'az') list.sort(byText);
+    if (sortMode === 'za') list.sort(function (a, b) { return byText(b, a); });
+    if (sortMode === 'active') list.sort(function (a, b) { return a.done - b.done; });
+    if (sortMode === 'done') list.sort(function (a, b) { return b.done - a.done; });
+    return list;
+  }
 
   function makeButton(label, className, handler) {
     var btn = document.createElement('button');
@@ -104,7 +157,14 @@
   function commitEdit(id, value) {
     var text = value.trim();
     var todo = todos.find(function (t) { return t.id === id; });
-    if (todo && text) todo.text = text;
+    if (todo && text) {
+      if (isDuplicate(text, id)) {
+        showMessage('That task already exists.');
+        return;
+      }
+      todo.text = text;
+      showMessage('');
+    }
     editingId = null;
     save(TODO_KEY, todos);
     renderTodos();
@@ -114,7 +174,7 @@
     todoList.innerHTML = '';
     todoEmpty.classList.toggle('hidden', todos.length > 0);
 
-    todos.forEach(function (todo) {
+    getSortedTodos().forEach(function (todo) {
       var li = document.createElement('li');
       li.className = 'todo-item' + (todo.done ? ' done' : '');
 
@@ -168,9 +228,20 @@
     e.preventDefault();
     var text = todoInput.value.trim();
     if (!text) return;
+    if (isDuplicate(text, null)) {
+      showMessage('That task already exists.');
+      return;
+    }
+    showMessage('');
     todos.push({ id: Date.now(), text: text, done: false });
     save(TODO_KEY, todos);
     todoInput.value = '';
+    renderTodos();
+  });
+
+  todoSort.addEventListener('change', function () {
+    sortMode = todoSort.value;
+    localStorage.setItem(SORT_KEY, sortMode);
     renderTodos();
   });
 

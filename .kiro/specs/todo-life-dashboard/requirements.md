@@ -37,6 +37,9 @@ Todo List Life Dashboard is a client-side web app that combines a greeting with 
 4. WHEN the user clicks Stop, THE Dashboard SHALL pause the countdown at the current value.
 5. WHEN the user clicks Reset, THE Dashboard SHALL stop the countdown and set the display back to 25:00.
 6. WHEN the countdown reaches 00:00, THE Dashboard SHALL stop the timer and notify the user.
+7. WHEN the user sets a duration from 1 to 180 minutes, THE Dashboard SHALL use it as the timer length, reset the timer to it, and save it to Local Storage.
+8. IF the entered duration is outside 1 to 180 minutes, THEN THE Dashboard SHALL reject it and keep the current duration.
+9. WHEN the page loads, THE Dashboard SHALL restore the saved duration, or use 25 minutes if none is saved.
 
 ### Requirement 3: To-Do List
 
@@ -52,6 +55,8 @@ Todo List Life Dashboard is a client-side web app that combines a greeting with 
 6. WHEN the Task list changes, THE Dashboard SHALL save it to Local Storage.
 7. WHEN the page loads, THE Dashboard SHALL restore Tasks from Local Storage.
 8. WHILE there are no Tasks, THE Dashboard SHALL show an empty-state message.
+9. IF a new or edited Task has the same text as an existing Task (ignoring case and surrounding spaces), THEN THE Dashboard SHALL reject it and show a message.
+10. WHEN the user picks a sort option (order added, A to Z, Z to A, not done first, done first), THE Dashboard SHALL display Tasks in that order and save the choice to Local Storage.
 
 ### Requirement 4: Quick Links
 

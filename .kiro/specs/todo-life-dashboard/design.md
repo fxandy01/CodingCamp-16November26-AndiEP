@@ -34,6 +34,9 @@ A two-column CSS grid on desktop, collapsing to one column at 700px or narrower.
 2. **Greeting/clock**: `getGreeting(hour)` and `updateClock()`, refreshed by `setInterval` every 1000 ms.
 3. **Focus timer**: `startTimer`, `stopTimer`, `resetTimer`, `renderTimer`. State is `remaining` (seconds) and `timerId`. Start is ignored if `timerId` is already set.
 4. **To-do list**: `renderTodos()` rebuilds the list from the `todos` array. `editingId` marks the Task being edited. Enter or Save commits an edit, and Esc cancels it.
+   - Duplicate check: `isDuplicate(text, ignoreId)` compares trimmed, lowercase text on add and edit.
+   - Sorting: `getSortedTodos()` sorts a copy of `todos` for display, so stored order stays as added.
+   - Timer length: `setTimerMinutes` validates input, saves it, and resets the timer.
 5. **Quick links**: `renderLinks()` rebuilds the chips from the `links` array. `normalizeUrl()` adds `https://` and validates with `new URL`.
 
 ## Data Models
@@ -43,6 +46,8 @@ Stored in Local Storage as JSON arrays.
 | Key | Item shape |
 |---|---|
 | `dashboard.todos` | `{ id: number, text: string, done: boolean }` |
+| `dashboard.timerMinutes` | number (1 to 180) |
+| `dashboard.todoSort` | `added`, `az`, `za`, `active`, or `done` |
 | `dashboard.links` | `{ id: number, name: string, url: string }` |
 
 `id` is `Date.now()` at creation time. Default links are used only when the `dashboard.links` key does not exist, so a user who deletes every link keeps an empty list.

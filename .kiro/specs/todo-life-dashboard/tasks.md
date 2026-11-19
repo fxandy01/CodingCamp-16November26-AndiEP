@@ -35,7 +35,12 @@
   - [x] 6.4 Persist to and restore from Local Storage, with defaults on first load
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8_
 
-- [ ] 7. Manual verification in a browser
+- [x] 7. Add enhancements
+  - [x] 7.1 Change timer length (1 to 180 minutes), saved in Local Storage
+  - [x] 7.2 Prevent duplicate tasks on add and edit
+  - [x] 7.3 Sort tasks, with the choice saved in Local Storage
+
+- [ ] 8. Manual verification in a browser
   - Open `index.html` in Chrome, Firefox, Edge, and Safari
   - Check each acceptance criterion, including reload persistence
   - _Requirements: TC-3_
