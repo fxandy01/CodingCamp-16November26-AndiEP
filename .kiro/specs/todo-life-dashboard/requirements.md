@@ -24,6 +24,8 @@ Todo List Life Dashboard is a client-side web app that combines a greeting with 
 4. WHEN the hour is 12:00 to 16:59, THE Dashboard SHALL show "Good afternoon".
 5. WHEN the hour is 17:00 to 20:59, THE Dashboard SHALL show "Good evening".
 6. WHEN the hour is 21:00 to 04:59, THE Dashboard SHALL show "Good night".
+7. WHEN the user saves a name, THE Dashboard SHALL append it to the greeting (for example "Good morning, Andi") and save it to Local Storage.
+8. WHEN the user saves an empty name, THE Dashboard SHALL remove the saved name and show the greeting without it.
 
 ### Requirement 2: Focus Timer
 
@@ -40,6 +42,9 @@ Todo List Life Dashboard is a client-side web app that combines a greeting with 
 7. WHEN the user sets a duration from 1 to 180 minutes, THE Dashboard SHALL use it as the timer length, reset the timer to it, and save it to Local Storage.
 8. IF the entered duration is outside 1 to 180 minutes, THEN THE Dashboard SHALL reject it and keep the current duration.
 9. WHEN the page loads, THE Dashboard SHALL restore the saved duration, or use 25 minutes if none is saved.
+10. WHEN a countdown reaches 00:00, THE Dashboard SHALL add one completed session and the session length in minutes to today's focus stats, and save them to Local Storage.
+11. THE Dashboard SHALL display today's completed sessions and focused minutes, and reset them when the date changes.
+12. WHEN the user stops or resets before 00:00, THE Dashboard SHALL NOT count the session.
 
 ### Requirement 3: To-Do List
 
@@ -72,6 +77,16 @@ Todo List Life Dashboard is a client-side web app that combines a greeting with 
 6. WHEN the Quick Links change, THE Dashboard SHALL save them to Local Storage.
 7. WHEN the page loads, THE Dashboard SHALL restore Quick Links from Local Storage.
 8. WHEN no saved Quick Links exist in Local Storage, THE Dashboard SHALL show default links (Google, GitHub, YouTube).
+
+### Requirement 5: Theme
+
+**User Story:** As a user, I want a dark or light theme, so that the Dashboard is comfortable to read in any lighting.
+
+#### Acceptance Criteria
+
+1. WHEN the user clicks the theme button, THE Dashboard SHALL switch between light and dark themes and save the choice to Local Storage.
+2. WHEN the page loads with no saved choice, THE Dashboard SHALL use the browser's preferred color scheme.
+3. WHEN the page loads with a saved choice, THE Dashboard SHALL apply it.
 
 ## Technical Constraints
 

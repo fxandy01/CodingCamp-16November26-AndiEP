@@ -5,6 +5,9 @@
   var LINK_KEY = 'dashboard.links';
   var TIMER_KEY = 'dashboard.timerMinutes';
   var SORT_KEY = 'dashboard.todoSort';
+  var NAME_KEY = 'dashboard.name';
+  var STATS_KEY = 'dashboard.focusStats';
+  var THEME_KEY = 'dashboard.theme';
   var DEFAULT_MINUTES = 25;
   var MIN_MINUTES = 1;
   var MAX_MINUTES = 180;
@@ -39,17 +42,52 @@
     return 'Good night';
   }
 
+  var nameForm = document.getElementById('name-form');
+  var nameInput = document.getElementById('name-input');
+  var userName = (localStorage.getItem(NAME_KEY) || '').trim();
+  nameInput.value = userName;
+
+  nameForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    userName = nameInput.value.trim();
+    if (userName) {
+      localStorage.setItem(NAME_KEY, userName);
+    } else {
+      localStorage.removeItem(NAME_KEY);
+    }
+    updateClock();
+  });
+
   function updateClock() {
     var now = new Date();
     timeEl.textContent = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
     dateEl.textContent = now.toLocaleDateString(undefined, {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
-    greetingEl.textContent = getGreeting(now.getHours());
+    greetingEl.textContent = getGreeting(now.getHours()) + (userName ? ', ' + userName : '');
   }
 
   updateClock();
   setInterval(updateClock, 1000);
+
+  // ---------- Theme ----------
+  var themeBtn = document.getElementById('theme-toggle');
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeBtn.textContent = theme === 'dark' ? 'Light' : 'Dark';
+    themeBtn.setAttribute('aria-label', 'Switch to ' + (theme === 'dark' ? 'light' : 'dark') + ' mode');
+  }
+
+  var savedTheme = localStorage.getItem(THEME_KEY);
+  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(savedTheme === 'dark' || savedTheme === 'light' ? savedTheme : (prefersDark ? 'dark' : 'light'));
+
+  themeBtn.addEventListener('click', function () {
+    var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    localStorage.setItem(THEME_KEY, next);
+    applyTheme(next);
+  });
 
   // ---------- Focus timer ----------
   var timerDisplay = document.getElementById('timer-display');
@@ -62,6 +100,37 @@
   function loadMinutes() {
     var saved = parseInt(localStorage.getItem(TIMER_KEY), 10);
     return saved >= MIN_MINUTES && saved <= MAX_MINUTES ? saved : DEFAULT_MINUTES;
+  }
+
+  // Focus stats: completed sessions today. Resets when the date changes.
+  var statsEl = document.getElementById('focus-stats');
+
+  function todayKey() {
+    var d = new Date();
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  }
+
+  function loadStats() {
+    var empty = { date: todayKey(), sessions: 0, minutes: 0 };
+    try {
+      var data = JSON.parse(localStorage.getItem(STATS_KEY));
+      if (data && data.date === empty.date && data.sessions >= 0 && data.minutes >= 0) return data;
+    } catch (e) { /* use empty stats */ }
+    return empty;
+  }
+
+  function renderStats() {
+    var stats = loadStats();
+    var label = stats.sessions === 1 ? 'session' : 'sessions';
+    statsEl.textContent = 'Today: ' + stats.sessions + ' ' + label + ' \u00b7 ' + stats.minutes + ' min focused';
+  }
+
+  function recordSession(minutes) {
+    var stats = loadStats();
+    stats.sessions += 1;
+    stats.minutes += minutes;
+    save(STATS_KEY, stats);
+    renderStats();
   }
 
   function renderTimer() {
@@ -80,6 +149,7 @@
       renderTimer();
       if (remaining <= 0) {
         stopTimer();
+        recordSession(timerMinutes);
         alert('Time is up! Take a break.');
       }
     }, 1000);
@@ -105,6 +175,7 @@
 
   timerForm.addEventListener('submit', setTimerMinutes);
   timerMinutesInput.value = timerMinutes;
+  renderStats();
 
   document.getElementById('timer-start').addEventListener('click', startTimer);
   document.getElementById('timer-stop').addEventListener('click', stopTimer);

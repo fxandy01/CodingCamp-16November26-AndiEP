@@ -40,7 +40,12 @@
   - [x] 7.2 Prevent duplicate tasks on add and edit
   - [x] 7.3 Sort tasks, with the choice saved in Local Storage
 
-- [ ] 8. Manual verification in a browser
+- [x] 8. Add personalization
+  - [x] 8.1 Name in greeting, saved in Local Storage
+  - [x] 8.2 Daily focus stats (sessions and minutes), reset each day
+  - [x] 8.3 Dark and light theme toggle, saved in Local Storage
+
+- [ ] 9. Manual verification in a browser
   - Open `index.html` in Chrome, Firefox, Edge, and Safari
   - Check each acceptance criterion, including reload persistence
   - _Requirements: TC-3_
