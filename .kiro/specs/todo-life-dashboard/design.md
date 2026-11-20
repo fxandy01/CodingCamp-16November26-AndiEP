@@ -32,7 +32,10 @@ A two-column CSS grid on desktop, collapsing to one column at 700px or narrower.
 
 1. **Storage helpers**: `load(key, fallback)` parses JSON from Local Storage and returns the fallback on missing or corrupt data. `save(key, value)` writes JSON.
 2. **Greeting/clock**: `getGreeting(hour)` and `updateClock()`, refreshed by `setInterval` every 1000 ms.
+   - Name: `nameForm` saves the name and `updateClock()` appends it to the greeting.
 3. **Focus timer**: `startTimer`, `stopTimer`, `resetTimer`, `renderTimer`. State is `remaining` (seconds) and `timerId`. Start is ignored if `timerId` is already set.
+   - Stats: `loadStats()` returns empty stats when the stored date is not today. `recordSession(minutes)` runs when the countdown reaches 00:00.
+   - Theme: `applyTheme(theme)` sets `data-theme` on `<html>`. CSS variables in `:root[data-theme="dark"]` override the light palette.
 4. **To-do list**: `renderTodos()` rebuilds the list from the `todos` array. `editingId` marks the Task being edited. Enter or Save commits an edit, and Esc cancels it.
    - Duplicate check: `isDuplicate(text, ignoreId)` compares trimmed, lowercase text on add and edit.
    - Sorting: `getSortedTodos()` sorts a copy of `todos` for display, so stored order stays as added.
@@ -48,6 +51,9 @@ Stored in Local Storage as JSON arrays.
 | `dashboard.todos` | `{ id: number, text: string, done: boolean }` |
 | `dashboard.timerMinutes` | number (1 to 180) |
 | `dashboard.todoSort` | `added`, `az`, `za`, `active`, or `done` |
+| `dashboard.name` | string (max 30 characters) |
+| `dashboard.focusStats` | `{ date: 'YYYY-MM-DD', sessions: number, minutes: number }` |
+| `dashboard.theme` | `light` or `dark` |
 | `dashboard.links` | `{ id: number, name: string, url: string }` |
 
 `id` is `Date.now()` at creation time. Default links are used only when the `dashboard.links` key does not exist, so a user who deletes every link keeps an empty list.

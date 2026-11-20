@@ -10,9 +10,15 @@
   <main class="dashboard">
     <!-- Greeting -->
     <header class="card greeting">
+      <button id="theme-toggle" type="button" class="btn small theme-toggle" aria-label="Switch to dark mode">Dark</button>
       <p id="date" class="date"></p>
       <h1 id="time" class="time">00:00:00</h1>
       <p id="greeting" class="greeting-text"></p>
+      <form id="name-form" class="name-form">
+        <label for="name-input" class="visually-hidden">Your name</label>
+        <input id="name-input" type="text" placeholder="Your name" maxlength="30" autocomplete="given-name">
+        <button type="submit" class="btn small">Save</button>
+      </form>
     </header>
 
     <!-- Focus Timer -->
@@ -24,6 +30,7 @@
         <input id="timer-minutes" type="number" min="1" max="180" value="25" required>
         <button type="submit" class="btn small">Set</button>
       </form>
+      <p id="focus-stats" class="focus-stats"></p>
       <div class="button-row">
         <button id="timer-start" class="btn primary">Start</button>
         <button id="timer-stop" class="btn">Stop</button>
